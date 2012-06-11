@@ -69,6 +69,7 @@ def process_tweet(tweet):
         RTed = True
         old_tweet = tweet
         tweet = tweet.retweeted_status
+        t['RT_oldId']=old_tweet.id_str
     t['imgurl'] = tweet.author.profile_image_url.replace('normal.','mini.')
     t['name'] = tweet.author.screen_name
     t['id'] = tweet.id_str
@@ -87,7 +88,7 @@ def process_tweet(tweet):
                 t['RTinfo'] += ' and %s others' % count
             else: # regular number
                 count = int(count) - 1
-                if count:
+                if count>0:
                     t['RTinfo'] += ' and %d others' % count
         else: # by others
             t['RTinfo'] = 'RT by %s users' % str(tweet.retweet_count)

@@ -9,10 +9,19 @@
   </head>
   <body>
     % if not defined('no_nav'):
-    <div id='nav'>
-      <a href='/home'>home</a> <a href='/me'>me</a> <a href='/mention'>@me</a> 
-      <a href='/list'>list</a> <a href='/favs'>fav</a> <a href='/exit'>exit</a>
-    </div>
+    <ul class='nav' id='nav'>
+      <li><a href='/home'>home</a></li>
+      <li><a href='/me'>me</a></li>
+      <li><a href='/mention'>@me</a></li>
+      <li><a href='/search'>search</a></li>
+      <li><a onclick='togglemore()' href='#'>more</a></li>
+    </ul>
+
+    <ul style='display:none' class='nav' id='more'>
+      <li><a href='/list'>list</a></li>
+      <li><a href='/favs'>fav</a></li>
+      <li><a href='/exit'>exit</a></li>
+    </ul>
     % end
     % if not defined('no_enterbox'):
     <div id='input'>

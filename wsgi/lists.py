@@ -4,9 +4,10 @@ from oauth import *
 from libs import *
 
 @bottle.route('/list')
+@require_login_oauth
 def lists():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     owner = bottle.request.GET.get('owner','')
     if not owner:
         user=api('me')

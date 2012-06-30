@@ -6,6 +6,11 @@ rtbtn=document.getElementById('rtbtn');
 upbtn=document.getElementById('upbtn');
 resetbtn=document.getElementById('reset');
 
+function togglemore(){
+  t=document.getElementById('more');
+  t.style.display = t.style.display=='none'?'block':'none';
+}
+
 function getInfo(tid){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/getinfo?id='+tid,false);
@@ -26,7 +31,9 @@ function resetall(){
 
 function re(tid){
   resetall();
+  info.innerHTML='loading...';
   var t=getInfo(tid);
+  info.innerHTML='';
   info.innerHTML='@'+t.name+': '+t.text;
   twt.value='@'+t.name+' '+t.others;
   type.value='re';
@@ -38,17 +45,23 @@ function re(tid){
 function fav(t,tid){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/fav?id='+tid,false);
+  t.innerHTML='...';
   xmlhttp.send();
   if(xmlhttp.status==200)
     t.innerHTML=xmlhttp.responseText;
+  else
+    t.innerHTML='ERR';
 }
 
 function follow(t,name){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/follow?name='+name,false);
+  t.innerHTML='...';
   xmlhttp.send();
   if(xmlhttp.status==200)
     t.innerHTML=xmlhttp.responseText;
+  else
+    t.innerHTML='ERR';
 }
 
 
@@ -58,9 +71,12 @@ function del(t,tid){
   }else{
     var xmlhttp=new XMLHttpRequest();
     xmlhttp.open('get','/del?id='+tid,false);
+    t.innerHTML='...';
     xmlhttp.send();
     if(xmlhttp.status==200)
       self.location.reload();
+    else
+      t.innerHTML='ERR';
   }
 }
 
@@ -76,7 +92,9 @@ function ort(tid){
 
 function rt(tid){
   resetall();
+  info.innerHTML='loading...';
   var t=getInfo(tid);
+  info.innerHTML='';
   twt.value='RT @'+t.name+': '+t.text;
   type.value='rt';
   id.value=tid;

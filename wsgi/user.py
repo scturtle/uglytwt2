@@ -24,9 +24,10 @@ def follow():
         return msg
 
 @bottle.route('/following')
+@require_login_oauth
 def following():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
@@ -36,9 +37,10 @@ def following():
     return bottle.template('follow', title='following', name=name, users=result[0], cursor=result[1])
 
 @bottle.route('/followers')
+@require_login_oauth
 def followers():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
@@ -48,9 +50,10 @@ def followers():
     return bottle.template('follow', title='followers', name=name, users=result[0], cursor=result[1])
 
 @bottle.route('/user')
+@require_login_oauth
 def user():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')

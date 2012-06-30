@@ -51,24 +51,43 @@ def innerError(error):
     return bottle.template('error',e=error)
 
 @bottle.route('/me')
+@require_login_oauth
 def me():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     me = api('me')
     return bottle.redirect('/user?name='+me.screen_name)
 
+@bottle.route('/search')
+@require_login_oauth
+def search():
+    q = bottle.request.GET.get('q','')
+    nozh = bottle.request.GET.get('nozh','')
+    if q:
+        if nozh=='true':
+            tweets = api('search',rpp=20,**bottle.request.GET)
+        else:
+            tweets = api('search',rpp=20,lang='zh',**bottle.request.GET)
+    else:
+        tweets=[]
+    tweets = map(process_tweet, tweets)
+    return bottle.template('search', tweets=tweets, q=q, nozh=nozh)
+
+
 @bottle.route('/mention')
+@require_login_oauth
 def mention():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     tweets = api('mentions',**bottle.request.GET)
     tweets = map(process_tweet, tweets)
     return bottle.template('mention', tweets=tweets)
 
 @bottle.route('/favs')
+@require_login_oauth
 def favs():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     name = bottle.request.GET.get('name','')
     if not name: name=api('me').screen_name
     try:
@@ -79,9 +98,10 @@ def favs():
     return bottle.template('fav', name=name, tweets=tweets)
 
 @bottle.route('/thread')
+@require_login_oauth
 def thread():
-    if not get_session(): bottle.redirect('/')
-    if not get_auth(): bottle.redirect('/oauth')
+    #if not get_session(): bottle.redirect('/')
+    #if not get_auth(): bottle.redirect('/oauth')
     tweets = [api('get_status',id=bottle.request.GET['id'])]
     while tweets[-1].in_reply_to_status_id:
         tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
@@ -112,7 +132,7 @@ def apitest():
     if not hasattr(results,'__iter__'):
         results = [results]
     for i,r in enumerate(results):
-        if type(r) in [tweepy.models.Status, tweepy.models.User]:
+        if type(r) in [tweepy.models.SearchResult, tweepy.models.Status, tweepy.models.User]:
             d = {}
             for idx in filter(lambda idx: not idx.startswith('__'), dir(r)):
                 d[idx]=getattr(r,idx)

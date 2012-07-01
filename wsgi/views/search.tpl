@@ -2,7 +2,7 @@
 %include header title='Search',no_enterbox=True
 <div id='input'>
   <form>
-  <input type='text' name='q' value='{{q}}' style='width:100%'><br/>
+  <input type='text' name='q' value='{{q}}' style='width:98%'><br/>
   not only Chinese<input type='checkbox' name='nozh' value='true' {{'checked' if nozh else ''}}> 
   <input type='submit' value='search'>
 </div>

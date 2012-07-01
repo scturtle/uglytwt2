@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="format-detection" content="telephone=no" />
     <title>{{title}}</title>
     <link rel="stylesheet" href="/static/main.css" type="text/css"/>
   </head>
@@ -24,15 +25,19 @@
     </ul>
     % end
     % if not defined('no_enterbox'):
+    <fieldset>
+    <legend>tweet: </legend>
     <div id='input'>
       <small><span id='info'></span></small>
       <form>
-        <textarea id="twt" name="twt" rows="3"></textarea>
+        <textarea id="twt" name="twt" rows="4" onkeydown='count()' onkeyup='count()'></textarea>
         <input id='type' name='type' type='hidden' value='' />
         <input id='id'   name='id'   type='hidden' value='' />
         <input id='rtbtn' type='hidden' value='Offical RT' />
         <input id='upbtn' type='button' value='Update' onclick='update()'/>
         <input id='reset' type='hidden' value='Reset' onclick='resetall()'/>
+	<input id='ct' type='button' value='140' onclick='count()'/>
       </form>
     </div>
+    </fieldset>
     % end

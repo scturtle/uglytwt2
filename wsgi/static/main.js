@@ -5,6 +5,9 @@ id=document.getElementById('id');
 rtbtn=document.getElementById('rtbtn');
 upbtn=document.getElementById('upbtn');
 resetbtn=document.getElementById('reset');
+ct=document.getElementById('ct');
+
+function count(){ ct.value=140-twt.value.length; return ct.value; }
 
 function togglemore(){
   t=document.getElementById('more');
@@ -33,7 +36,6 @@ function re(tid){
   resetall();
   info.innerHTML='loading...';
   var t=getInfo(tid);
-  info.innerHTML='';
   info.innerHTML='@'+t.name+': '+t.text;
   twt.value='@'+t.name+' '+t.others;
   type.value='re';

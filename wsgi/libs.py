@@ -39,7 +39,7 @@ def process_entities(tweet):
         # hashtags
         if 'hashtags' in ent:
             for t in ent['hashtags']:
-                m = '<span class="tag">#%s</span>' % t['text']
+                m = '<a class="tag" href="/search?q=%%23%s">#%s</a>' % (t['text'],t['text'])
                 rep_list.append((m, t['indices']))
         # urls
         if 'urls' in ent:

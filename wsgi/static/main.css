@@ -4,8 +4,10 @@
 .tweet, .userinfo {border-bottom:1px solid #aaaaaa;padding:10px 0px;}
 
 a{color:#3B5998;font-weight:bold;}
-.tag{color:#5ca363;font-weight:bold;}
-textarea {width:95%;}
+.tag{color:#5ca363;font-weight:bold;text-decoration:none;}
+fieldset{margin:0;padding-bottom:2px;}
+#twt {width:98%;}
+#ct {color:gray;float:right;}
 small,small a{color:gray;}
 body{background-color:#F7F7F7;max-width:480px;margin:auto;padding:0 5px;}
 

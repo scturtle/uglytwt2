@@ -3,8 +3,11 @@ from utils import *
 from oauth import *
 from libs import *
 
+######### function about user ################
+
 @bottle.route('/follow')
 def follow():
+    ''' ajax function for (un)follow action '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
     name = bottle.request.GET.get('name','')
@@ -23,11 +26,12 @@ def follow():
         msg = e.reason.encode('utf-8').split('\n')[0]
         return msg
 
+# why not one function ? #TODO
+
 @bottle.route('/following')
 @require_login_oauth
 def following():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' people that you are following page '''
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
@@ -39,8 +43,7 @@ def following():
 @bottle.route('/followers')
 @require_login_oauth
 def followers():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' your followers page '''
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
@@ -52,8 +55,7 @@ def followers():
 @bottle.route('/user')
 @require_login_oauth
 def user():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' user info page '''
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')

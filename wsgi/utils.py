@@ -3,7 +3,9 @@ import uuid
 import bottle
 import pymongo
 
-#  settings  #####################################
+# function for DB and session ####################
+
+#  settings for mongoDB ##########################
 
 mongo_con = pymongo.Connection(
         os.environ['OPENSHIFT_NOSQL_DB_HOST'],
@@ -18,7 +20,7 @@ bottle.TEMPLATE_PATH.append(
   os.path.join(os.environ['OPENSHIFT_GEAR_DIR'],
                'runtime/repo/wsgi/views/'))
 
-#  user functions  ###############################
+#  user functions for mongoDB ####################
 def get_md5(s):
     from md5 import md5
     return md5(s).hexdigest()

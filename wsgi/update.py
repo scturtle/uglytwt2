@@ -3,8 +3,11 @@ from utils import *
 from oauth import *
 from libs import *
 
+########## some function for ajax ############
+
 @bottle.route('/getinfo')
 def getinfo():
+    ''' get infomation for one tweet '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
     try:
@@ -23,6 +26,7 @@ def getinfo():
 
 @bottle.route('/ort')
 def ort():
+    ''' offical retweet '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
     try:
@@ -35,6 +39,7 @@ def ort():
 
 @bottle.route('/fav')
 def fav():
+    ''' favorite action '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
     tid = bottle.request.GET['id']
@@ -53,10 +58,15 @@ def fav():
 
 @bottle.route('/del')
 def delete():
+    ''' delete tweet or dm '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
+    tp = bottle.request.GET.get('type',None)
     try:
-        tweet = api('destroy_status', id=bottle.request.GET['id'])
+        if not tp:
+            tweet = api('destroy_status', id=bottle.request.GET['id'])
+        elif tp=='dm':
+            tweet = api('destroy_direct_message', id=bottle.request.GET['id'])
     except tweepy.TweepError,e:
         bottle.response.status=206
         msg = e.reason.encode('utf-8').split('\n')[0]
@@ -65,13 +75,18 @@ def delete():
 
 @bottle.post('/update')
 def update():
+    ''' update tweet, reply, rt or dm '''
     if not get_session(): bottle.abort('401')
     if not get_auth(): bottle.abort('401')
-    tp=bottle.request.POST['type'];
+    tp=bottle.request.POST.get('type',None)
     try:
-        if not tp or tp=='re' or tp=='rt':
+        if not tp:
             api('update_status',status=bottle.request.POST['twt'],
                     in_reply_to_status_id=bottle.request.POST['id'])
+        elif tp=='dm':
+            api('send_direct_message',text=bottle.request.POST['msg'],
+                    user=bottle.request.POST['name'].lstrip('@'))
+            return bottle.redirect('/dm?type=byme')
     except tweepy.TweepError,e:
         bottle.response.status=206
         msg = e.reason.encode('utf-8').split('\n')[0]

@@ -1,19 +1,21 @@
 info=document.getElementById('info');
 twt=document.getElementById('twt');
-type=document.getElementById('type');
 id=document.getElementById('id');
 rtbtn=document.getElementById('rtbtn');
 upbtn=document.getElementById('upbtn');
 resetbtn=document.getElementById('reset');
 ct=document.getElementById('ct');
 
+// word count
 function count(){ ct.value=140-twt.value.length; return ct.value; }
 
+// toggle more menu
 function togglemore(){
   t=document.getElementById('more');
   t.style.display = t.style.display=='none'?'block':'none';
 }
 
+// get info of a tweet
 function getInfo(tid){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/getinfo?id='+tid,false);
@@ -24,7 +26,6 @@ function getInfo(tid){
 function resetall(){
   info.innerHTML='';
   twt.value='';
-  type.value='';
   id.value='';
   rtbtn.type='hidden';
   upbtn.value='Update';
@@ -38,7 +39,6 @@ function re(tid){
   var t=getInfo(tid);
   info.innerHTML='@'+t.name+': '+t.text;
   twt.value='@'+t.name+' '+t.others;
-  type.value='re';
   id.value=tid;
   upbtn.value='Reply';
   resetbtn.type='button';
@@ -55,6 +55,7 @@ function fav(t,tid){
     t.innerHTML='ERR';
 }
 
+// verb.
 function follow(t,name){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/follow?name='+name,false);
@@ -66,13 +67,14 @@ function follow(t,name){
     t.innerHTML='ERR';
 }
 
-
+// verb.
 function del(t,tid){
+  tp=arguments[2]?arguments[2]:"";
   if(t.innerHTML=='DEL'){
     t.innerHTML='SURE';
   }else{
     var xmlhttp=new XMLHttpRequest();
-    xmlhttp.open('get','/del?id='+tid,false);
+    xmlhttp.open('get','/del?id='+tid+'&type='+tp,false);
     t.innerHTML='...';
     xmlhttp.send();
     if(xmlhttp.status==200)
@@ -82,6 +84,7 @@ function del(t,tid){
   }
 }
 
+// offical RT
 function ort(tid){
   var xmlhttp=new XMLHttpRequest();
   xmlhttp.open('get','/ort?id='+tid,false);
@@ -92,13 +95,16 @@ function ort(tid){
     info.innerHTML=xmlhttp.responseText;
 }
 
+function dm(name){
+  document.getElementById('name').value=name;
+}
+
 function rt(tid){
   resetall();
   info.innerHTML='loading...';
   var t=getInfo(tid);
   info.innerHTML='';
   twt.value='RT @'+t.name+': '+t.text;
-  type.value='rt';
   id.value=tid;
   if(!t.protected){
     rtbtn.type='button';
@@ -109,6 +115,7 @@ function rt(tid){
 }
 
 function update(){
+  // ajax form post
   form=document.forms[0];
   var params=new Array();
   for(var i=0;i<form.elements.length;i++){

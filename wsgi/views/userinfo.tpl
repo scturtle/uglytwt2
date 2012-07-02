@@ -22,5 +22,6 @@
 % if not defined('simple'):
   <b>lists</b>: <a href='/list?owner={{user.screen_name}}'>{{len(user.lists())+len(user.lists_subscriptions())}}</a><br/>
 % end
+  <a href='dm?name={{user.screen_name}}'>Direct message</a><br/>
 </div>
 % end

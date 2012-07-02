@@ -11,8 +11,10 @@ from home import *
 from user import *
 from update import *
 from lists import *
+from dm import *
 
 #  bottle functions  #############################
+
 @bottle.route('/')
 def main():
     if get_session():
@@ -48,19 +50,19 @@ def logout():
 
 @bottle.error(500)
 def innerError(error):
+    ''' universal error handler page '''
     return bottle.template('error',e=error)
 
 @bottle.route('/me')
 @require_login_oauth
 def me():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
     me = api('me')
     return bottle.redirect('/user?name='+me.screen_name)
 
 @bottle.route('/search')
 @require_login_oauth
 def search():
+    ''' search page '''
     q = bottle.request.GET.get('q','')
     nozh = bottle.request.GET.get('nozh','')
     if q:
@@ -77,8 +79,7 @@ def search():
 @bottle.route('/mention')
 @require_login_oauth
 def mention():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' mentions(replies) of me '''
     tweets = api('mentions',**bottle.request.GET)
     tweets = map(process_tweet, tweets)
     return bottle.template('mention', tweets=tweets)
@@ -86,8 +87,7 @@ def mention():
 @bottle.route('/favs')
 @require_login_oauth
 def favs():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' favorite tweets of me or others '''
     name = bottle.request.GET.get('name','')
     if not name: name=api('me').screen_name
     try:
@@ -100,8 +100,7 @@ def favs():
 @bottle.route('/thread')
 @require_login_oauth
 def thread():
-    #if not get_session(): bottle.redirect('/')
-    #if not get_auth(): bottle.redirect('/oauth')
+    ''' thread of replies '''
     tweets = [api('get_status',id=bottle.request.GET['id'])]
     while tweets[-1].in_reply_to_status_id:
         tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
@@ -116,7 +115,7 @@ def _exit():
 import tweepy
 @bottle.route('/apitest')
 def apitest():
-    ''' useful function for test api '''
+    ''' useful function for test api !!! '''
     if not get_session(): bottle.redirect('/')
     auth = get_auth()
     if not auth: bottle.redirect('/oauth')
@@ -132,7 +131,8 @@ def apitest():
     if not hasattr(results,'__iter__'):
         results = [results]
     for i,r in enumerate(results):
-        if type(r) in [tweepy.models.SearchResult, tweepy.models.Status, tweepy.models.User]:
+        if type(r) in [tweepy.models.SearchResult, tweepy.models.DirectMessage,
+                tweepy.models.Status, tweepy.models.User]:
             d = {}
             for idx in filter(lambda idx: not idx.startswith('__'), dir(r)):
                 d[idx]=getattr(r,idx)

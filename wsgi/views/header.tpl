@@ -19,6 +19,7 @@
     </ul>
 
     <ul style='display:none' class='nav' id='more'>
+      <li><a href='/dm'>dm</a></li>
       <li><a href='/list'>list</a></li>
       <li><a href='/favs'>fav</a></li>
       <li><a href='/exit'>exit</a></li>
@@ -31,7 +32,6 @@
       <small><span id='info'></span></small>
       <form>
         <textarea id="twt" name="twt" rows="4" onkeydown='count()' onkeyup='count()'></textarea>
-        <input id='type' name='type' type='hidden' value='' />
         <input id='id'   name='id'   type='hidden' value='' />
         <input id='rtbtn' type='hidden' value='Offical RT' />
         <input id='upbtn' type='button' value='Update' onclick='update()'/>

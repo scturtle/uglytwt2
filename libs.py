@@ -3,6 +3,8 @@ from utils import *
 from oauth import *
 import datetime
 
+from google.appengine.api import users
+
 def require_login_oauth(func):
     ''' wrapper for check session and oauth '''
     def wrapper(*a, **ka):
@@ -77,14 +79,14 @@ def process_entities(tweet):
     return tweet.text
 
 def process_dms(tweets):
-    user = mongo_db.users.find_one({'username': get_session()['username']})
-    return map(lambda t: process_dm(t, user), tweets)
+    user = get_user_db()
+    return map(lambda t:process_dm(t,user), tweets)
 
 def process_dm(tweet, user):
     ''' preprocess direct message '''
     t={}
     t['time'] = str(tweet.created_at+datetime.timedelta(hours=+8))[5:16]
-    t['del'] = str(tweet.sender_id) == user['tid']
+    t['del'] = str(tweet.sender_id) == user.tid
     t['id'] = tweet.id_str
     t['imgurl'] = tweet.sender.profile_image_url.replace('normal.','mini.')
     t['sender'] = tweet.sender_screen_name
@@ -93,8 +95,8 @@ def process_dm(tweet, user):
     return t
     
 def process_tweets(tweets):
-    user = mongo_db.users.find_one({'username': get_session()['username']})
-    return map(lambda t: process_tweet(t, user), tweets)
+    user = get_user_db()
+    return map(lambda t:process_tweet(t,user), tweets)
 
 def process_tweet(tweet, user):
     ''' preprocess tweet '''
@@ -108,11 +110,11 @@ def process_tweet(tweet, user):
     if hasattr(tweet, 'author'):
         t['imgurl'] = tweet.author.profile_image_url.replace('normal.','mini.')
         t['name'] = tweet.author.screen_name
-        t['del'] = tweet.author.id_str == user['tid']
+        t['del'] = tweet.author.id_str == user.tid
     else: # for search result
         t['imgurl'] = tweet.profile_image_url.replace('normal.','mini.')
         t['name'] = tweet.from_user
-        t['del'] = tweet.from_user_id_str == user['tid']
+        t['del'] = tweet.from_user_id_str == user.tid
     t['id'] = tweet.id_str
     t['fav'] = tweet.favorited if hasattr(tweet,'favorited') else False
     t['time'] = str(tweet.created_at+datetime.timedelta(hours=+8))[5:16]

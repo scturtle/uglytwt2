@@ -13,40 +13,21 @@ from update import *
 from lists import *
 from dm import *
 
+from google.appengine.api import users
+
 #  bottle functions  #############################
 
 @bottle.route('/')
-def main():
+def index(): # Cannot be main! Fuck you, GAE!
     if get_session():
         bottle.redirect('/home')
-    return bottle.template('main')
-
-@bottle.post('/')
-def login_signup():
-    if 'username' in bottle.request.POST and 'password' in bottle.request.POST:
-        username = bottle.request.POST['username']
-        password = bottle.request.POST['password']
-        tp = bottle.request.POST['type']
-        if tp=='login':
-            if username and user_auth(username, password):
-                create_session(username)
-                bottle.redirect('/home')
-            else:
-                return bottle.template('main',error_login=True)
-        elif tp=='signup':
-            if username:
-                user = create_user(username, password)
-                if user != 'exists':
-                    create_session(username)
-                    bottle.redirect('/home')
-                else:
-                    return bottle.template('main',error_signup=True)
-    return bottle.template('main')
+    login_url = users.create_login_url('/')
+    return bottle.template('main',{'login_url':login_url})
 
 @bottle.route('/logout')
 def logout():
-    destroy_session()
-    bottle.redirect('/')
+    logout_url = users.create_logout_url('/')
+    bottle.redirect(logout_url)
 
 @bottle.error(500)
 def innerError(error):
@@ -142,5 +123,6 @@ def apitest():
     return '<pre>\n',escape(pformat(results)),'</pre>'
 
 
-bottle.debug(True)
-application = bottle.default_app()
+if __name__=='__main__':
+    bottle.debug(True)
+    bottle.run(server='gae')

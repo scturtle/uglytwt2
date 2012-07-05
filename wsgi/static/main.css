@@ -16,3 +16,4 @@ body{background-color:#F7F7F7;max-width:480px;margin:auto;padding:0 5px;}
 .nav {overflow:auto;margin:0;padding:0;text-align:center;background:#c6e6ff;}
 .nav li{list-style:none;display:inline;line-height:3em;border-right:1px solid #fff;}
 .nav a{padding:0.8em 0.4em;}
+.nav#pages a{padding:0.8em 3em;}

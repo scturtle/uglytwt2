@@ -61,5 +61,5 @@ def user():
     bottle.request.GET.pop('name')
     tweets = api('user_timeline', screen_name=name, **bottle.request.GET)
     user = api('get_user', screen_name=name)
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('user', user=user, tweets=tweets)

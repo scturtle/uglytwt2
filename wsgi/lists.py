@@ -24,5 +24,5 @@ def lists():
             bottle.request.GET.pop('slug')
         except:pass
         tweets = api('list_timeline', owner=user.screen_name, slug=slug, **bottle.request.GET)
-        tweets = map(process_tweet, tweets)
+        tweets = process_tweets(tweets)
         return bottle.template('lists', only_slugs=False, owner=user.screen_name, slug=slug, tweets=tweets)

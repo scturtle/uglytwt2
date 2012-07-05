@@ -8,5 +8,5 @@ from libs import *
 def home():
     ''' home timeline page '''
     tweets = api('home_timeline', **bottle.request.GET)
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('home', tweets=tweets)

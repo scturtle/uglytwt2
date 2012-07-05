@@ -72,7 +72,7 @@ def search():
             tweets = api('search',rpp=20,lang='zh',**bottle.request.GET)
     else:
         tweets=[]
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('search', tweets=tweets, q=q, nozh=nozh)
 
 
@@ -81,7 +81,7 @@ def search():
 def mention():
     ''' mentions(replies) of me '''
     tweets = api('mentions',**bottle.request.GET)
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('mention', tweets=tweets)
 
 @bottle.route('/favs')
@@ -94,7 +94,7 @@ def favs():
         bottle.request.GET.pop('name')
     except:pass
     tweets = api('favorites',screen_name=name,**bottle.request.GET)
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('fav', name=name, tweets=tweets)
 
 @bottle.route('/thread')
@@ -104,7 +104,7 @@ def thread():
     tweets = [api('get_status',id=bottle.request.GET['id'])]
     while tweets[-1].in_reply_to_status_id:
         tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
-    tweets = map(process_tweet, tweets)
+    tweets = process_tweets(tweets)
     return bottle.template('thread', tweets=tweets)
 
 @bottle.route('/exit')

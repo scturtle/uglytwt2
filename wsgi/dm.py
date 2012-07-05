@@ -25,5 +25,5 @@ def user():
     else:
         tweets = []
 
-    tweets = map(process_dm, tweets)
+    tweets = process_dms(tweets)
     return bottle.template('dm', name = name, tp = tp, tweets = tweets)

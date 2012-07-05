@@ -76,10 +76,13 @@ def process_entities(tweet):
         return replace_all(tweet.text, rep_list)
     return tweet.text
 
-def process_dm(tweet):
+def process_dms(tweets):
+    user = mongo_db.users.find_one({'username': get_session()['username']})
+    return map(lambda t: process_dm(t, user), tweets)
+
+def process_dm(tweet, user):
     ''' preprocess direct message '''
     t={}
-    user = mongo_db.users.find_one({'username': get_session()['username']})
     t['time'] = str(tweet.created_at+datetime.timedelta(hours=+8))[5:16]
     t['del'] = str(tweet.sender_id) == user['tid']
     t['id'] = tweet.id_str
@@ -89,8 +92,11 @@ def process_dm(tweet):
     t['text'] = process_entities(tweet)
     return t
     
+def process_tweets(tweets):
+    user = mongo_db.users.find_one({'username': get_session()['username']})
+    return map(lambda t: process_tweet(t, user), tweets)
 
-def process_tweet(tweet):
+def process_tweet(tweet, user):
     ''' preprocess tweet '''
     t = {}
     RTed = False
@@ -99,7 +105,6 @@ def process_tweet(tweet):
         old_tweet = tweet
         tweet = tweet.retweeted_status
         t['RT_oldId']=old_tweet.id_str
-    user = mongo_db.users.find_one({'username': get_session()['username']})
     if hasattr(tweet, 'author'):
         t['imgurl'] = tweet.author.profile_image_url.replace('normal.','mini.')
         t['name'] = tweet.author.screen_name

@@ -8,9 +8,9 @@ from google.appengine.api import users
 def require_login_oauth(func):
     ''' wrapper for check session and oauth '''
     def wrapper(*a, **ka):
-        if not get_session(): 
+        if not get_session():
             return bottle.redirect('/')
-        if not get_auth(): 
+        if not get_auth():
             return bottle.redirect('/oauth')
         return func(*a, **ka)
     return wrapper
@@ -25,7 +25,7 @@ def api(method,**argv):
         #argv['count']=20
     if method in ['home_timeline','user_timeline','list_timeline',
             'favorites','mentions','get_status','search',
-            'direct_messages', 'sent_direct_messages']:
+            'direct_messages', 'sent_direct_messages','related_results']:
         argv['include_entities']=1
         argv['include_rts']=1
     method = getattr(tweepy.API(auth), method, None)
@@ -39,7 +39,7 @@ def replace_all(text,rep_list):
     return text
 
 def process_entities(tweet):
-    ''' process entities: tags, urls, users, pics ''' 
+    ''' process entities: tags, urls, users, pics '''
     if hasattr(tweet,'entities'):
         ent = tweet.entities
         rep_list=[]
@@ -93,7 +93,7 @@ def process_dm(tweet, user):
     t['recipient'] = tweet.recipient_screen_name
     t['text'] = process_entities(tweet)
     return t
-    
+
 def process_tweets(tweets):
     user = get_user_db()
     return map(lambda t:process_tweet(t,user), tweets)

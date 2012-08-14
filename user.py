@@ -60,6 +60,7 @@ def user():
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
     tweets = api('user_timeline', screen_name=name, **bottle.request.GET)
+    is_following_me = api('exists_friendship', user_a=name, user_b=get_user_db().screen_name)
     user = api('get_user', screen_name=name)
     tweets = process_tweets(tweets)
-    return bottle.template('user', user=user, tweets=tweets)
+    return bottle.template('user', user=user, tweets=tweets, is_following_me=is_following_me)

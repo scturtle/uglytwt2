@@ -101,9 +101,14 @@ def favs():
 @require_login_oauth
 def thread():
     ''' thread of replies '''
-    tweets = [api('get_status',id=bottle.request.GET['id'])]
-    while tweets[-1].in_reply_to_status_id:
-        tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
+    tweet = api('get_status', id=bottle.request.GET['id'])
+    related = api('related_results', id=bottle.request.GET['id'])
+    related = filter(lambda x: x.groupName == u'TweetsWithConversation', related)[0].results
+    tweets = [r.value for r in related if r.annotations['ConversationRole'] == 'Ancestor']
+    tweets.append(tweet)
+    tweets.extend([r.value for r in related if r.annotations['ConversationRole'] == 'Descendant'])
+    #while tweets[-1].in_reply_to_status_id:
+        #tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
     tweets = process_tweets(tweets)
     return bottle.template('thread', tweets=tweets)
 
@@ -111,6 +116,23 @@ def thread():
 def _exit():
     if not get_session(): bottle.redirect('/')
     return bottle.template('exit')
+
+
+models_list = [tweepy.models.SearchResult, tweepy.models.DirectMessage,
+        tweepy.models.Status,  # tweepy.models.User,
+        tweepy.models.Relation]
+def expand_tweepy_models(r):
+    if isinstance(r, dict):
+        return r
+    elif hasattr(r, '__iter__'):
+        return map(expand_tweepy_models, list(r))
+    elif type(r) in models_list:
+        d = {}
+        for idx in filter(lambda idx: not idx.startswith('__'), dir(r)):
+            d[idx]=expand_tweepy_models(getattr(r,idx))
+        return d
+    return r
+
 
 import tweepy
 @bottle.route('/apitest')
@@ -128,18 +150,13 @@ def apitest():
         bottle.abort(401, 'no method paramater')
     del gets['method']
     results = method(**gets)
-    if not hasattr(results,'__iter__'):
-        results = [results]
-    for i,r in enumerate(results):
-        if type(r) in [tweepy.models.SearchResult, tweepy.models.DirectMessage,
-                tweepy.models.Status, tweepy.models.User]:
-            d = {}
-            for idx in filter(lambda idx: not idx.startswith('__'), dir(r)):
-                d[idx]=getattr(r,idx)
-            results[i] = d
+    results = expand_tweepy_models(results)
     from pprint import pformat
     from cgi import escape
-    return '<pre>\n',escape(pformat(results)),'</pre>'
+    def t(m):
+        return unichr(int(m.group(0)[2:],16))
+    import re
+    return '<pre>\n',re.sub(r'\\u.{4}',t,escape(pformat(results))),'</pre>'
 
 
 bottle.debug(True)

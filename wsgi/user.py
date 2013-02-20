@@ -37,7 +37,7 @@ def following():
     bottle.request.GET.pop('name')
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
-    result = api('friends', screen_name=name, count=20, **bottle.request.GET)
+    result = api('friends_list', screen_name=name, count=20, **bottle.request.GET)
     return bottle.template('follow', title='following', name=name, users=result[0], cursor=result[1])
 
 @bottle.route('/followers')
@@ -49,7 +49,7 @@ def followers():
     bottle.request.GET.pop('name')
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
-    result = api('followers', screen_name=name, count=20, **bottle.request.GET)
+    result = api('followers_list', screen_name=name, count=20, **bottle.request.GET)
     return bottle.template('follow', title='followers', name=name, users=result[0], cursor=result[1])
 
 @bottle.route('/user')
@@ -59,8 +59,12 @@ def user():
     name = bottle.request.GET.get('name','')
     if not name: bottle.redirect('/')
     bottle.request.GET.pop('name')
-    tweets = api('user_timeline', screen_name=name, **bottle.request.GET)
-    is_following_me = api('exists_friendship', user_a=name, user_b=get_session()['username'])
+    try:
+        tweets = api('user_timeline', screen_name=name, **bottle.request.GET)
+        tweets = process_tweets(tweets)
+    except:
+        tweets = None
+    #is_following_me = api('exists_friendship', user_a=name, user_b=get_user_db().screen_name)
+    connections = api('_lookup_friendships', screen_name=name)
     user = api('get_user', screen_name=name)
-    tweets = process_tweets(tweets)
-    return bottle.template('user', user=user, tweets=tweets, is_following_me=is_following_me)
+    return bottle.template('user', user=user, tweets=tweets, connections=connections)

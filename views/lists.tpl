@@ -8,6 +8,7 @@
 %else:
 <p><b>list {{owner}}/{{slug}}:</b></p>
 %include tweets tweets=tweets
-%include pages  base='list?owner=%s&slug=%s' % (owner,slug),tweets=tweets
+%import urllib
+%include pages  base='list?owner=%s&slug=%s' % (owner,urllib.quote_plus(slug)), tweets=tweets
 %end
 %include footer

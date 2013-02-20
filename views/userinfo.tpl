@@ -9,7 +9,7 @@
   <b>name</b>: {{user.name}}<br/>
   <b>screen name</b>: <a href='user?name={{user.screen_name}}'>{{user.screen_name}}</a><br/>
 % if not defined('simple'):
-  <b>is following me</b>: {{is_following_me}}<br/>
+  <b>is following me</b>: {{connections[0].is_followed_by}}<br/>
 % end
   <b>following</b>: <a href='##' onclick='follow(this,"{{user.screen_name}}")'>{{'unfollow' if user.following else 'follow'}}</a><br/>
 % import datetime
@@ -23,7 +23,7 @@
   <b>following</b>: <a href='following?name={{user.screen_name}}'>{{user.friends_count}}</a><br/>
   <b>followers</b>: <a href='followers?name={{user.screen_name}}'>{{user.followers_count}}</a><br/>
 % if not defined('simple'):
-  <b>lists</b>: <a href='/list?owner={{user.screen_name}}'>{{len(user.lists())+len(user.lists_subscriptions())}}</a><br/>
+  <b>lists</b>: <a href='/list?owner={{user.screen_name}}'>{{len(user.lists())}}</a><br/>
 % end
   <a href='dm?name={{user.screen_name}}'>Direct message</a><br/>
 </div>

@@ -61,7 +61,7 @@ def search():
 @require_login_oauth
 def mention():
     ''' mentions(replies) of me '''
-    tweets = api('mentions',**bottle.request.GET)
+    tweets = api('mentions_timeline',**bottle.request.GET)
     tweets = process_tweets(tweets)
     return bottle.template('mention', tweets=tweets)
 
@@ -83,13 +83,16 @@ def favs():
 def thread():
     ''' thread of replies '''
     tweet = api('get_status', id=bottle.request.GET['id'])
-    related = api('related_results', id=bottle.request.GET['id'])
-    related = filter(lambda x: x.groupName == u'TweetsWithConversation', related)[0].results
-    tweets = [r.value for r in related if r.annotations['ConversationRole'] == 'Ancestor']
-    tweets.append(tweet)
-    tweets.extend([r.value for r in related if r.annotations['ConversationRole'] == 'Descendant'])
-    #while tweets[-1].in_reply_to_status_id:
-        #tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
+
+    #related = api('related_results', id=bottle.request.GET['id'])
+    #related = filter(lambda x: x.groupName == u'TweetsWithConversation', related)[0].results
+    #tweets = [r.value for r in related if r.annotations['ConversationRole'] == 'Ancestor']
+    #tweets.append(tweet)
+    #tweets.extend([r.value for r in related if r.annotations['ConversationRole'] == 'Descendant'])
+
+    tweets = [tweet]
+    while tweets[-1].in_reply_to_status_id:
+        tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
     tweets = process_tweets(tweets)
     return bottle.template('thread', tweets=tweets)
 
@@ -100,8 +103,8 @@ def _exit():
 
 
 models_list = [tweepy.models.SearchResult, tweepy.models.DirectMessage,
-        tweepy.models.Status,  # tweepy.models.User,
-        tweepy.models.Relation]
+        tweepy.models.Status, tweepy.models.User, tweepy.models.List,
+        tweepy.models.Relationship]
 def expand_tweepy_models(r):
     if isinstance(r, dict):
         return r

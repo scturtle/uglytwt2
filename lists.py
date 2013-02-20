@@ -15,7 +15,7 @@ def lists():
     slug = bottle.request.GET.get('slug','')
     if not slug:
         slugs=[]
-        for l in user.lists()+user.lists_subscriptions():
+        for l in user.lists(): #+user.lists_subscriptions():
             slugs.append([l.full_name[1:].split("/")[0],l.slug,l.full_name])
         return bottle.template('lists', only_slugs=True, owner=user.screen_name, slugs=slugs)
     else:
@@ -23,6 +23,6 @@ def lists():
             bottle.request.GET.pop('owner')
             bottle.request.GET.pop('slug')
         except:pass
-        tweets = api('list_timeline', owner=user.screen_name, slug=slug, **bottle.request.GET)
+        tweets = api('list_timeline', owner_screen_name=user.screen_name, slug=slug, **bottle.request.GET)
         tweets = process_tweets(tweets)
         return bottle.template('lists', only_slugs=False, owner=user.screen_name, slug=slug, tweets=tweets)

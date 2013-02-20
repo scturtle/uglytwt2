@@ -119,6 +119,7 @@ def process_tweet(tweet, user):
     t['fav'] = tweet.favorited if hasattr(tweet,'favorited') else False
     t['time'] = str(tweet.created_at+datetime.timedelta(hours=+8))[5:16]
     t['text'] = process_entities(tweet)
+    t['text'] = t['text'].replace('\n','<br>')
     t['source'] = tweet.source
     t['RTinfo'] = ''
     if RTed or (hasattr(tweet,'retweet_count') and tweet.retweet_count):

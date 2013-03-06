@@ -68,6 +68,16 @@ function follow(t,name){
 }
 
 // verb.
+function listm(t,lid,name){
+  var xmlhttp=new XMLHttpRequest();
+  var action=t.checked?'add':'remove';
+  xmlhttp.open('get','/listm?name='+name+'&list_id='+lid+'&action='+action,false);
+  t.disabled=true;
+  xmlhttp.send();
+  t.disabled=false;
+}
+
+// verb.
 function del(t,tid){
   tp=arguments[2]?arguments[2]:"";
   if(t.innerHTML=='DEL'){

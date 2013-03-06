@@ -1,9 +1,9 @@
 %# vim: set ts=2 sts=2 sw=2 et sta:
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html>
   <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta charset=utf-8>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="format-detection" content="telephone=no" />
     <title>{{title}}</title>
     <link rel="stylesheet" href="/static/main.css" type="text/css"/>

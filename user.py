@@ -38,7 +38,7 @@ def following():
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
     result = api('friends_list', screen_name=name, count=20, **bottle.request.GET)
-    return bottle.template('follow', title='following', name=name, users=result[0], cursor=result[1])
+    return bottle.template('follow', title='following', name=name, users=map(process_user_entities, result[0]), cursor=result[1])
 
 @bottle.route('/followers')
 @require_login_oauth
@@ -50,7 +50,7 @@ def followers():
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
     result = api('followers_list', screen_name=name, count=20, **bottle.request.GET)
-    return bottle.template('follow', title='followers', name=name, users=result[0], cursor=result[1])
+    return bottle.template('follow', title='followers', name=name, users=map(process_user_entities, result[0]), cursor=result[1])
 
 @bottle.route('/user')
 @require_login_oauth
@@ -65,6 +65,7 @@ def user():
     except:
         tweets = None
     #is_following_me = api('exists_friendship', user_a=name, user_b=get_user_db().screen_name)
-    connections = api('_lookup_friendships', screen_name=name)
+    is_following_me = api('show_friendship', source_screen_name=name, target_screen_name=get_user_db().screen_name)[0].following
     user = api('get_user', screen_name=name)
-    return bottle.template('user', user=user, tweets=tweets, connections=connections)
+    user = process_user_entities(user)
+    return bottle.template('user', user=user, tweets=tweets, is_following_me=is_following_me)

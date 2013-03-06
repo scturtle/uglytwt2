@@ -92,7 +92,9 @@ def thread():
 
     tweets = [tweet]
     while tweets[-1].in_reply_to_status_id:
-        tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
+        try:
+            tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
+        except:break
     tweets = process_tweets(tweets)
     return bottle.template('thread', tweets=tweets)
 
@@ -104,7 +106,7 @@ def _exit():
 
 models_list = [tweepy.models.SearchResult, tweepy.models.DirectMessage,
         tweepy.models.Status, tweepy.models.User, tweepy.models.List,
-        tweepy.models.Relationship]
+        tweepy.models.Relationship, tweepy.models.Friendship]
 def expand_tweepy_models(r):
     if isinstance(r, dict):
         return r

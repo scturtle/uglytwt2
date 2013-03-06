@@ -25,9 +25,11 @@ def api(method,**argv):
         #argv['count']=20
     if method in ['home_timeline','user_timeline','list_timeline',
             'favorites','mentions','get_status','search',
-            'direct_messages', 'sent_direct_messages','related_results']:
+            'direct_messages','sent_direct_messages','related_results']:
         argv['include_entities']=1
         argv['include_rts']=1
+    #if method in ['friends_list','followers_list']:
+        #argv['include_user_entities']=1
     method = getattr(tweepy.API(auth), method, None)
     tweets = method(**argv)
     return tweets
@@ -38,45 +40,50 @@ def replace_all(text,rep_list):
         text = text[:l[1][0]]+l[0]+text[l[1][1]:]
     return text
 
-def process_entities(tweet):
+def process_user_entities(user):
+    user.description = process_entities(user.description,
+                                        user.entities.get('description', None))
+    user.url = process_entities(user.url,
+                                user.entities.get('url', None))
+    return user
+
+def process_entities(text, ent):
     ''' process entities: tags, urls, users, pics '''
-    if hasattr(tweet,'entities'):
-        ent = tweet.entities
-        rep_list=[]
-        # hashtags
-        if 'hashtags' in ent:
-            for t in ent['hashtags']:
-                m = '<a class="tag" href="/search?q=%%23%s">#%s</a>' % (t['text'],t['text'])
-                rep_list.append((m, t['indices']))
-        # urls
-        if 'urls' in ent:
-            for u in ent['urls']:
-                if 'display_url' in u:
-                    ue,ud = u['expanded_url'], u['display_url']
-                else:
-                    ue = ud = u['url']
-                m = '<a href="%s" target=_blank>%s</a>' % (ue, ud)
-                rep_list.append((m, u['indices']))
-        # media
-        if 'media' in ent:
-            for md in ent['media']:
-                # if md['type']=='photo'
-                m = '<a href="%s" target=_blank>%s</a>' %\
-                        (md['media_url'], '[p.twimg.com]')
-                rep_list.append((m, md['indices']))
+    if not ent:
+        return text
 
-        # user_mentions
-        if 'user_mentions' in ent:
-            for u in ent['user_mentions']:
-                name = u['screen_name']
-                url = '/user?name=' + name
-                m = '<a href="%s">@%s</a>' % (url, name)
-                rep_list.append((m, u['indices']))
-
-        # replace backwards
-        rep_list.sort(key=lambda x: x[1][0],reverse=True)
-        return replace_all(tweet.text, rep_list)
-    return tweet.text
+    rep_list=[]
+    # hashtags
+    if 'hashtags' in ent:
+        for t in ent['hashtags']:
+            m = '<a class="tag" href="/search?q=%%23%s">#%s</a>' % (t['text'],t['text'])
+            rep_list.append((m, t['indices']))
+    # urls
+    if 'urls' in ent:
+        for u in ent['urls']:
+            if 'display_url' in u:
+                ue,ud = u['expanded_url'], u['display_url']
+            else:
+                ue = ud = u['url']
+            m = '<a href="%s" target=_blank>%s</a>' % (ue, ud)
+            rep_list.append((m, u['indices']))
+    # media
+    if 'media' in ent:
+        for md in ent['media']:
+            # if md['type']=='photo'
+            m = '<a href="%s" target=_blank>%s</a>' %\
+                    (md['media_url'], '[p.twimg.com]')
+            rep_list.append((m, md['indices']))
+    # user_mentions
+    if 'user_mentions' in ent:
+        for u in ent['user_mentions']:
+            name = u['screen_name']
+            url = '/user?name=' + name
+            m = '<a href="%s">@%s</a>' % (url, name)
+            rep_list.append((m, u['indices']))
+    # replace backwards
+    rep_list.sort(key=lambda x: x[1][0],reverse=True)
+    return replace_all(text, rep_list)
 
 def process_dms(tweets):
     user = get_user_db()
@@ -91,7 +98,7 @@ def process_dm(tweet, user):
     t['imgurl'] = tweet.sender.profile_image_url.replace('normal.','mini.')
     t['sender'] = tweet.sender_screen_name
     t['recipient'] = tweet.recipient_screen_name
-    t['text'] = process_entities(tweet)
+    t['text'] = process_entities(tweet.text, tweet.entities)
     return t
 
 def process_tweets(tweets):
@@ -118,13 +125,13 @@ def process_tweet(tweet, user):
     t['id'] = tweet.id_str
     t['fav'] = tweet.favorited if hasattr(tweet,'favorited') else False
     t['time'] = str(tweet.created_at+datetime.timedelta(hours=+8))[5:16]
-    t['text'] = process_entities(tweet)
+    t['text'] = process_entities(tweet.text, tweet.entities)
     t['text'] = t['text'].replace('\n','<br>')
     t['source'] = tweet.source
     t['RTinfo'] = ''
     if RTed or (hasattr(tweet,'retweet_count') and tweet.retweet_count):
         if RTed: # by your following people
-            t['RTinfo'] = 'RT by ' + old_tweet.author.screen_name
+            t['RTinfo'] = 'RT by ' + '<a href="/user?name={0}">{0}</a>'.format(old_tweet.author.screen_name)
             count = tweet.retweet_count
             if type(count)==unicode and count[-1]=='+': # '100+'
                 t['RTinfo'] += ' and %s others' % count

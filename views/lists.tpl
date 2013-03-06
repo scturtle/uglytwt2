@@ -3,7 +3,9 @@
 % if only_slugs:
 <p><b>lists of {{owner}}:</b></p>
 % for l in slugs:
-<p><a href='/list?owner={{l[0]}}&slug={{l[1]}}'>{{l[2]}}</a></p>
+<p><a href='/list?owner={{l[0]}}&slug={{l[1]}}'>{{l[2]}}</a>
+(<a href='/listmember?owner={{l[0]}}&slug={{l[1]}}'>members</a>)
+</p>
 %end
 %else:
 <p><b>list {{owner}}/{{slug}}:</b></p>

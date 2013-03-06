@@ -4,5 +4,5 @@
 <p>{{e.status}} {{e.output}}:</p>
 <p><b>{{e.exception.reason if hasattr(e.exception,'reason') else e.exception.message}}</b></p>
 <p>If this happens all the time, try to <a href='/unoauth'>unoauth</a> and oauth again.</p>
-<small style='font-size:10px'><pre>{{e.traceback}}<pre></small>
+<pre><small style='font-size:10px'>{{e.traceback}}</small><pre>
 %include footer

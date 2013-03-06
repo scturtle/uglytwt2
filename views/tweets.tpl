@@ -15,7 +15,7 @@
  </small>
  <div>
   {{!t['text']}}
-  <small>via {{t['source']}} {{t['RTinfo']}} 
+  <small>via {{t['source']}} {{!t['RTinfo']}} 
 % if t['thread']:
   <a href='/thread?id={{t['id']}}'>thread</a>
 % end

@@ -282,7 +282,7 @@ class List(Model):
         return self._api.list_members(self.user.screen_name, self.slug, **kargs)
 
     def is_member(self, id):
-        return self._api.is_list_member(self.user.screen_name, self.slug, id)
+        return self._api.show_list_member(owner_screen_name=self.user.screen_name, slug=self.slug, screen_name=id)
 
     def subscribe(self):
         return self._api.subscribe_list(self.user.screen_name, self.slug)

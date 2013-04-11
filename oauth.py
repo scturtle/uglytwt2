@@ -9,6 +9,11 @@ from google.appengine.ext import db
 
 consumer_key = 'k6h2GKL2ZqTjxxrBZuMEmQ'
 consumer_secret = '9CW8b1hVN3kQf6bvPrrgff8TUyehtDyOe9cDj2K5uxA'
+
+# tweetdeck
+consumer_key = 'yT577ApRtZw51q4NPMPPOQ'
+consumer_secret = '3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8'
+
 #domain = 'https://uglytwtr.appspot.com/'
 domain = 'http://u.scturtle.me/'
 

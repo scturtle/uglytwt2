@@ -12,6 +12,7 @@ from user import *
 from update import *
 from lists import *
 from dm import *
+from activity import *
 
 from google.appengine.api import users
 
@@ -104,7 +105,7 @@ def _exit():
     return bottle.template('exit')
 
 
-models_list = [tweepy.models.SearchResult, tweepy.models.DirectMessage,
+models_list = [tweepy.models.SearchResults, tweepy.models.DirectMessage,
         tweepy.models.Status, tweepy.models.User, tweepy.models.List,
         tweepy.models.Relationship, tweepy.models.Friendship]
 def expand_tweepy_models(r):

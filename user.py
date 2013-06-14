@@ -37,7 +37,7 @@ def following():
     bottle.request.GET.pop('name')
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
-    result = api('friends_list', screen_name=name, count=20, **bottle.request.GET)
+    result = api('friends', screen_name=name, count=20, **bottle.request.GET)
     return bottle.template('follow', title='following', name=name, users=map(process_user_entities, result[0]), cursor=result[1])
 
 @bottle.route('/followers')
@@ -49,7 +49,7 @@ def followers():
     bottle.request.GET.pop('name')
     if 'cursor' not in bottle.request.GET:
         bottle.request.GET['cursor'] = -1
-    result = api('followers_list', screen_name=name, count=20, **bottle.request.GET)
+    result = api('followers', screen_name=name, count=20, **bottle.request.GET)
     return bottle.template('follow', title='followers', name=name, users=map(process_user_entities, result[0]), cursor=result[1])
 
 @bottle.route('/user')

@@ -10,7 +10,8 @@
   </head>
   <body>
     % if not defined('no_nav'):
-    <ul class='nav' id='nav'>
+    <div>
+    <ul class='nav even-5' id='nav'>
       <li><a href='/home'>home</a></li>
       <li><a href='/me'>me</a></li>
       <li><a href='/mention'>@me</a></li>
@@ -18,18 +19,19 @@
       <li><a onclick='togglemore()' href='#'>more</a></li>
     </ul>
 
-    <ul style='display:none' class='nav' id='more'>
+    <ul style='display:none' class='nav even-5' id='more'>
       <li><a href='/dm'>dm</a></li>
       <li><a href='/list'>list</a></li>
+      <li><a href='/activity'>activity</a></li>
       <li><a href='/favs'>fav</a></li>
       <li><a href='/exit'>exit</a></li>
     </ul>
+    </div>
     % end
     % if not defined('no_enterbox'):
-    <fieldset>
-    <legend>tweet: </legend>
     <div id='input'>
-      <small><span id='info'></span></small>
+      <small><div id='info'></div></small>
+      tweet:
       <form>
         <textarea id="twt" name="twt" rows="4" onkeydown='count()' onkeyup='count()'></textarea>
         <input id='id'   name='id'   type='hidden' value='' />
@@ -39,5 +41,4 @@
 	<input id='ct' type='button' value='140' onclick='count()'/>
       </form>
     </div>
-    </fieldset>
     % end

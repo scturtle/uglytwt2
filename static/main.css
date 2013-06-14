@@ -1,7 +1,7 @@
 .avatar {float:left;margin:5px 5px 0 0;}
 .avatar img {width:24px;height:24px;}
 .content {overflow:hidden;display:table-cell;}
-.tweet, .userinfo {border-bottom:1px solid #aaaaaa;padding:10px 0px;}
+#input, .tweet, .userinfo {background-color:#f0f0f0;border:1px solid #ddd;margin:10px 0;padding:5px;}
 
 a{color:#3B5998;font-weight:bold;}
 .tag{color:#5ca363;font-weight:bold;text-decoration:none;}
@@ -11,9 +11,10 @@ fieldset{margin:0;padding-bottom:2px;}
 small,small a{color:gray;}
 body{background-color:#F7F7F7;max-width:480px;margin:auto;padding:0 5px;}
 
-#input{text-align:center;}
+#input form{text-align:center;}
 
-.nav {overflow:auto;margin:0;padding:0;text-align:center;background:#c6e6ff;}
-.nav li{list-style:none;display:inline;line-height:3em;border-right:1px solid #fff;}
-.nav a{padding:0.8em 0.4em;}
-.nav#pages a{padding:0.8em 3em;}
+.nav {margin:0;padding:0;list-style:none outside none;}
+.nav li{float:left;}
+.nav.even-2 li{width:50%;}
+.nav.even-5 li{width:20%;}
+.nav a{background-color:#2ba6cb;outline:1px solid #fff;color:#fff;display:inline-block;padding:10px 0;text-align:center;text-decoration:none;width:100%;}

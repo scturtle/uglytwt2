@@ -102,7 +102,7 @@ function ort(tid){
   if(xmlhttp.status==200)
     self.location='/home';
   else
-    info.innerHTML=xmlhttp.responseText;
+    info.innerHTML='Error: '+JSON.parse(xmlhttp.response.replace(/u?'/g,'"'))[0]['message'];
 }
 
 function dm(name){
@@ -145,6 +145,6 @@ function update(){
   if(xmlhttp.status==200)
     self.location='/home';
   else
-    info.innerHTML=xmlhttp.responseText;
+    info.innerHTML='Error: '+JSON.parse(xmlhttp.response.replace(/u?'/g,'"'))[0]['message'];
 }
 // vim:set ts=2 sts=2 sw=2 et sta:

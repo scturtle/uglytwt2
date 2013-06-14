@@ -57,6 +57,8 @@ def lists():
     slug = bottle.request.GET.get('slug','')
     if not slug:
         slugs=[]
+        #from main import expand_tweepy_models
+        #raise Exception(expand_tweepy_models(user))
         for l in user.lists(): #+user.lists_subscriptions():
             slugs.append([l.full_name[1:].split("/")[0],l.slug,l.full_name])
         return bottle.template('lists', only_slugs=True, owner=user.screen_name, slugs=slugs)

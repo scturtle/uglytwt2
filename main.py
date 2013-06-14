@@ -107,7 +107,8 @@ def _exit():
 
 models_list = [tweepy.models.SearchResults, tweepy.models.DirectMessage,
         tweepy.models.Status, tweepy.models.User, tweepy.models.List,
-        tweepy.models.Relationship, tweepy.models.Friendship]
+        tweepy.models.Relationship, tweepy.models.Friendship, 
+        tweepy.models.Activity]
 def expand_tweepy_models(r):
     if isinstance(r, dict):
         return r

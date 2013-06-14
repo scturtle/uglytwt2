@@ -25,7 +25,8 @@ def api(method,**argv):
         #argv['count']=20
     if method in ['home_timeline','user_timeline','list_timeline',
             'favorites','mentions','get_status','search',
-            'direct_messages','sent_direct_messages','related_results']:
+            'direct_messages','sent_direct_messages','related_results',
+            'activity']:
         argv['include_entities']=1
         argv['include_rts']=1
     #if method in ['friends_list','followers_list']:

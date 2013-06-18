@@ -419,9 +419,14 @@ class Activity(Model):
             elif k == 'targets':
                 if json['action'] in ('favorite', 'retweet'):
                     targets = Status.parse_list(api, v)
-                else:
+                elif json['action'] in ('follow', 'list_member_added'):
                     targets = User.parse_list(api, v)
+                elif json['action'] == 'list_created':
+                    targets = List.parse_list(api, v)
                 setattr(act, k, targets)
+            elif k == 'target_objects':
+                if json['action'] == 'list_member_added':
+                    setattr(act, k, List.parse_list(api, v))
             else:
                 setattr(act, k, v)
         return act

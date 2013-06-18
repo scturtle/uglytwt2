@@ -117,11 +117,12 @@ def process_tweet(tweet, user):
         t['RT_oldId']=old_tweet.id_str
     if hasattr(tweet, 'author'):
         t['imgurl'] = tweet.author.profile_image_url.replace('normal.','mini.')
-        t['name'] = tweet.author.screen_name
+        t['name'] = tweet.author.name
+        t['screen_name'] = tweet.author.screen_name
         t['del'] = tweet.author.id_str == user.tid
     else: # for search result
         t['imgurl'] = tweet.profile_image_url.replace('normal.','mini.')
-        t['name'] = tweet.from_user
+        t['screen_name'] = tweet.from_user
         t['del'] = tweet.from_user_id_str == user.tid
     t['id'] = tweet.id_str
     t['fav'] = tweet.favorited if hasattr(tweet,'favorited') else False

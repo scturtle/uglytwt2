@@ -14,21 +14,47 @@ from lists import *
 from dm import *
 from activity import *
 
-from google.appengine.api import users
-
 #  bottle functions  #############################
 
-@bottle.route('/')
-def index(): # Cannot be main! Fuck you, GAE!
+@bottle.route('/static/<filename>')
+def static(filename):
+    return bottle.static_file(filename, root='static')
+
+@bottle.get('/')
+def index():
     if get_session():
         bottle.redirect('/home')
-    login_url = users.create_login_url('/')
-    return bottle.template('main',{'login_url':login_url})
+    return bottle.template('main')
+
+@bottle.post('/')
+def login_signup():
+    username = bottle.request.POST['username']
+    password = bottle.request.POST['password']
+    tp = bottle.request.POST['type']
+    if tp=='login':
+        if not username or not password:
+            return bottle.template('main',error_login='No username or password!')
+        if user_auth(username, password):
+            create_session(username)
+            bottle.redirect('/home')
+        else:
+            return bottle.template('main', error_login='Not registered or wrong password.')
+    elif tp=='signup':
+        if not username or not password:
+            return bottle.template('main',error_signup='No username or password!')
+        ok = create_user(username, password)
+        if ok:
+            create_session(username)
+            bottle.redirect('/home')
+        else:
+            return bottle.template('main', error_signup='Username has already been taken.')
+    bottle.redirect('/')
+
 
 @bottle.route('/logout')
 def logout():
-    logout_url = users.create_logout_url('/')
-    bottle.redirect(logout_url)
+    destroy_session()
+    bottle.redirect('/')
 
 @bottle.error(500)
 def innerError(error):
@@ -149,4 +175,6 @@ def apitest():
 
 if __name__=='__main__':
     bottle.debug(True)
-    bottle.run(server='gae')
+    bottle.run()
+
+app = bottle.default_app()

@@ -2,9 +2,6 @@ from utils import *
 import tweepy
 import bottle
 
-from google.appengine.api import users
-from google.appengine.ext import db
-
 # app info #######################################
 
 consumer_key = 'k6h2GKL2ZqTjxxrBZuMEmQ'
@@ -14,8 +11,7 @@ consumer_secret = '9CW8b1hVN3kQf6bvPrrgff8TUyehtDyOe9cDj2K5uxA'
 consumer_key = 'yT577ApRtZw51q4NPMPPOQ'
 consumer_secret = '3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8'
 
-#domain = 'https://uglytwtr.appspot.com/'
-domain = 'http://u.scturtle.me/'
+domain = 'http://uglytwt.herokuapp.com/'
 
 #  twitter oauth functions  ######################
 
@@ -29,7 +25,7 @@ def oauth():
 def get_auth():
     ''' get saved oauth info '''
     user = get_user_db()
-    if not user.oauth_key:
+    if not user or not user.oauth_key:
         return None
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(user.oauth_key,user.oauth_secret)

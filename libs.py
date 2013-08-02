@@ -3,8 +3,6 @@ from utils import *
 from oauth import *
 import datetime
 
-from google.appengine.api import users
-
 def require_login_oauth(func):
     ''' wrapper for check session and oauth '''
     def wrapper(*a, **ka):

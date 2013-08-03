@@ -109,7 +109,10 @@ def favs():
 @require_login_oauth
 def thread():
     ''' thread of replies '''
-    tweet = api('get_status', id=bottle.request.GET['id'])
+    tweets = api('conversation', id=bottle.request.GET['id'])
+    tweets = process_tweets(tweets)
+    return bottle.template('thread', tweets=tweets)
+    #tweet = api('get_status', id=bottle.request.GET['id'])
 
     #related = api('related_results', id=bottle.request.GET['id'])
     #related = filter(lambda x: x.groupName == u'TweetsWithConversation', related)[0].results
@@ -117,13 +120,13 @@ def thread():
     #tweets.append(tweet)
     #tweets.extend([r.value for r in related if r.annotations['ConversationRole'] == 'Descendant'])
 
-    tweets = [tweet]
-    while tweets[-1].in_reply_to_status_id:
-        try:
-            tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
-        except:break
-    tweets = process_tweets(tweets)
-    return bottle.template('thread', tweets=tweets)
+    #tweets = [tweet]
+    #while tweets[-1].in_reply_to_status_id:
+        #try:
+            #tweets.append(api('get_status',id=tweets[-1].in_reply_to_status_id))
+        #except:break
+    #tweets = process_tweets(tweets)
+    #return bottle.template('thread', tweets=tweets)
 
 @bottle.route('/exit')
 def _exit():
@@ -134,7 +137,7 @@ def _exit():
 models_list = [tweepy.models.SearchResults, tweepy.models.DirectMessage,
         tweepy.models.Status, tweepy.models.User, tweepy.models.List,
         tweepy.models.Relationship, tweepy.models.Friendship, 
-        tweepy.models.Activity]
+        tweepy.models.Activity, tweepy.models.Relation]
 def expand_tweepy_models(r):
     if isinstance(r, dict):
         return r

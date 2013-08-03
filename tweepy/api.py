@@ -571,7 +571,7 @@ class API(object):
     list_members = bind_api(
         path = '/lists/members.json',
         payload_type = 'user', payload_list = True,
-        allowed_param = ['owner_screen_name', 'slug', 'list_id', 'owner_id', 'cursor']
+        allowed_param = ['owner_screen_name', 'slug', 'list_id', 'owner_id', 'cursor', 'include_entities', 'include_user_entities']
     )
 
     show_list_member = bind_api(
@@ -679,9 +679,17 @@ class API(object):
     activity = bind_api(
             path = '/activity/by_friends.json',
             payload_type = 'activity', payload_list = True,
-            allowed_param = ['include_entities', 'max_id'],
+            allowed_param = ['include_entities', 'include_user_entities', 'max_id'],
             require_auth = True
             )
+
+    """/conversation/show/:id.format"""
+    conversation = bind_api(
+        path = '/conversation/show/{id}.json',
+        payload_type = 'status', payload_list = True,
+        allowed_param = ['id', 'include_entities', 'include_user_entities'],
+        require_auth = False
+    )
 
     """ Internal use only """
     @staticmethod

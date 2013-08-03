@@ -23,14 +23,14 @@ def api(method,**argv):
     if not method: return None
     #if method in ['home_timeline']:
         #argv['count']=20
-    if method in ['home_timeline','user_timeline','list_timeline',
+    if method in ['home_timeline','user_timeline',
+            'list_timeline','list_members',
             'favorites','mentions','get_status','search',
             'direct_messages','sent_direct_messages','related_results',
-            'activity']:
+            'activity', 'conversation']:
+        argv['include_user_entities']=1
         argv['include_entities']=1
         argv['include_rts']=1
-    #if method in ['friends_list','followers_list']:
-        #argv['include_user_entities']=1
     method = getattr(tweepy.API(auth), method, None)
     tweets = method(**argv)
     return tweets

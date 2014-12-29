@@ -4,9 +4,10 @@ import bottle
 from hashlib import md5
 
 import pymongo
-conn = pymongo.Connection(host='dharma.mongohq.com', port=10037)
-db = conn.app17278948
-db.authenticate('heroku','9af8372f3bf2169a45a60069c57a8dbd')
+#  heroku config | grep MONGOLAB_URI
+conn = pymongo.Connection(host='********.mongolab.com', port=47940)
+db = conn.heroku_app00000000
+db.authenticate('heroku_app00000000','**************************')
 users = db.users
 
 # function for DB and session ####################

@@ -8,9 +8,10 @@ consumer_key = 'k6h2GKL2ZqTjxxrBZuMEmQ'
 consumer_secret = '9CW8b1hVN3kQf6bvPrrgff8TUyehtDyOe9cDj2K5uxA'
 
 # tweetdeck
-consumer_key = 'yT577ApRtZw51q4NPMPPOQ'
-consumer_secret = '3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8'
+_consumer_key = 'yT577ApRtZw51q4NPMPPOQ'
+_consumer_secret = '3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8'
 
+#domain = 'http://localhost:8080/'
 domain = 'http://uglytwt.herokuapp.com/'
 
 #  twitter oauth functions  ######################
@@ -27,7 +28,10 @@ def get_auth():
     user = get_user_db()
     if not user or not user.oauth_key:
         return None
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    if user.screen_name == 'scturtle':
+        auth = tweepy.OAuthHandler(_consumer_key, _consumer_secret)
+    else:
+        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(user.oauth_key,user.oauth_secret)
     return auth
 
@@ -37,8 +41,8 @@ def oauth_request():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret, domain + 'oauth_callback')
     redirect_url = auth.get_authorization_url()
     user = get_user_db()
-    user.req_key = auth.request_token.key
-    user.req_secret = auth.request_token.secret
+    user.req_key = auth.request_token['oauth_token']
+    user.req_secret = auth.request_token['oauth_token_secret']
     user.put()
     bottle.redirect(redirect_url)
 
@@ -48,10 +52,11 @@ def oauth_callback():
     verifier = bottle.request.GET['oauth_verifier']
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     user = get_user_db()
-    auth.set_request_token(user.req_key, user.req_secret)
+    auth.request_token = dict(oauth_token=user.req_key,
+                              oauth_token_secret=user.req_secret)
     auth.get_access_token(verifier)
-    user.oauth_key = auth.access_token.key
-    user.oauth_secret = auth.access_token.secret
+    user.oauth_key = auth.access_token
+    user.oauth_secret = auth.access_token_secret
     me = tweepy.API(auth).me()
     user.screen_name = me.screen_name
     user.tid = me.id_str

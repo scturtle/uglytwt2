@@ -9,11 +9,11 @@
 <b>
 % if act.action=='list_member_added':
 % l = act.target_objects[0]
-add member to list <a href='/list?owner={{l.user.screen_name}}&slug={{l.slug}}'>{{l.full_name}}</a>:
+add member to list <a href='/list?owner={{l['user']['screen_name']}}&slug={{l['slug']}}'>{{l['full_name']}}</a>:
 % end
 % if act.action=='list_created':
 % l = act.targets[0]
-create list <a href='/list?owner={{l.user.screen_name}}&slug={{l.slug}}'>{{l.full_name}}</a>
+create list <a href='/list?owner={{l['user']['screen_name']}}&slug={{l['slug']}}'>{{l['full_name']}}</a>
 % end
 % if not act.action.startswith('list'):
 {{act.action}}:

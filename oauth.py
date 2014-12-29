@@ -12,7 +12,8 @@ _consumer_key = 'yT577ApRtZw51q4NPMPPOQ'
 _consumer_secret = '3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8'
 
 #domain = 'http://localhost:8080/'
-domain = 'http://uglytwt.herokuapp.com/'
+#domain = 'http://uglytwt.herokuapp.com/'
+domain = 'http://ut.scturtle.me/'
 
 #  twitter oauth functions  ######################
 
